@@ -6,7 +6,7 @@
 #include <sys/ioctl.h>
 
 
-#define SERVER_PORT 12345
+#define SERVER_PORT 20401
 #define BUFFER_SIZE 80
 
 main (int argc, char *argv[])
@@ -22,8 +22,7 @@ main (int argc, char *argv[])
 	}
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); //- SOCK_STREAM: посылаются потоки байтов, понятие "сообщения" не вводится. Используемый протокол связи надежен, с установлением виртуального соединения, как TCP в области AF_INET; 
-	if (sockfd < 0)
-	{
+	if (sockfd < 0) {
 		perror("socket");
 		exit(-1);
 	}
@@ -42,19 +41,15 @@ main (int argc, char *argv[])
 	addr.sin_addr.s_addr = inet_addr(argv[1]); //The inet_addr function converts a string containing an IPv4 dotted-decimal address into a proper address for the IN_ADDR structure.
 	addr.sin_port        = htons(SERVER_PORT); //преобразовать короткое целое из формата локального хоста в сетевой формат
 
-	error = connect(sockfd,
-					(struct sockaddr *)&addr,
-					sizeof(struct sockaddr_in));
-	if (error < 0)
-	{
+	error = connect(sockfd, (struct sockaddr *)&addr, sizeof(struct sockaddr_in));
+	if (error < 0) {
 		perror("connect");
 		close(sockfd);
 		exit(-1);
 	}
 
 	len = send(sockfd, argv[2], strlen(argv[2]) + 1, 0);
-	if (len != strlen(argv[2]) + 1)
-	{
+	if (len != strlen(argv[2]) + 1) {
 		perror("send");
 		close(sockfd);
 		exit(-1);
