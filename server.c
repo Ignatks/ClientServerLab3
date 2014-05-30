@@ -108,7 +108,7 @@ void main (int argc, char *argv[])
 		#else
 		pid_t childPid = fork();
 		if (childPid == 0) {
-			&thread_func((void*)&accept_sd);
+			(&thread_func)((void*)(&accept_sd));
 			exit(0);
 		}
 		#endif
