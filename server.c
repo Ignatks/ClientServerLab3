@@ -5,7 +5,7 @@
 #include <string.h>
 #include <pthread.h>
 
-#define SERVER_PORT 12345
+#define SERVER_PORT 20401
 #define QUEUE_SIZE 5
 
 void send_file(char* filename, int socket)
@@ -48,6 +48,9 @@ void main (int argc, char *argv[])
 	int error;
 	int listen_sd;
 
+	pthread_t pthread;
+	int rc;
+	
 	int accept_sd;
 	char buffer[80];
 	struct sockaddr_in addr;
@@ -95,9 +98,20 @@ void main (int argc, char *argv[])
 			close(listen_sd);
 			exit(-1);
 		}
-		// here start new thread
-		pthread_t pthread;
-		pthread_create(&pthread, NULL, &thread_func, (void*)&accept_sd);
+		
+		#ifdef PTHREAD
+		rc = pthread_create(&pthread, NULL, &thread_func, (void*)&accept_sd);
+		if (rc) {
+			printf("ERROR; return code from pthread_create() is %d\n", rc);
+			exit(-1);
+		}
+		#else
+		pid_t childPid = fork();
+		if (childPid == 0) {
+			&thread_func((void*)&accept_sd);
+			exit(0);
+		}
+		#endif
 	}
 	close(listen_sd);
 }
