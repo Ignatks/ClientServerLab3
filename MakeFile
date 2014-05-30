@@ -10,5 +10,5 @@ all:
 	mv server serverFiles
 	cp -p ServerDoc.in serverFiles
 clean:
-	rm -r ./clientFiles
-	rm -r ./serverFiles
+	rm -r -f ./clientFiles
+	rm -r -f ./serverFiles
